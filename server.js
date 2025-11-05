@@ -1,6 +1,9 @@
+import 'dotenv/config';
 import express from 'express';
 import { getConnection } from './config/database.js';
 import userRoutes from './routes/userRoutes.js';
+import routerCategoria from './routes/categoriesRoutes.js';
+import routerTransaction from './routes/transactionsRoutes.js'
 
 
 const app = express();
@@ -16,24 +19,11 @@ app.get('/', (req, res) => {
     res.send('Bem vindo ao sistema!');
 });
 
+//Rotas do usuário, categoria e transações
 app.use('/api/user', userRoutes);
+app.use('/api/categories', routerCategoria);
+app.use('/api/transactions', routerTransaction);
 
-// //Testando o DB
-app.get('/categories', async (req, res) => {
-    let connection;
-    try {
-        connection = await getConnection();
-        const [rows] = await connection.execute('SELECT * FROM categories');
-        res.json(rows);
-    } catch (error) {
-        console.error('Erro:', error);
-        res.status(500).json({ error: 'Erro no servidor' });
-    } finally {
-        if (connection) {
-            await connection.end(); // ✅ Fecha a conexão
-        }
-    }
-});
 
 const port = 3000;
 app.listen(port, () => {
