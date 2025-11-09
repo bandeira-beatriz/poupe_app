@@ -1,12 +1,12 @@
+# Poupe App - Sistema de Gestão Financeira
 
+## Funcionalidades
+- Autenticação JWT
+- CRUD de transações
+- Estatísticas mensais
+- Categorias personalizáveis
 
-APLICATIVO DE FINANÇAS
-
-O que o usuário poderá fazer:
-- acessar a tela principal
-- acessar a tela de login
-- cadastrar o usuário na tela de login
-- realizar o login com senha e e-mail
-- cadastrar nova senha
-
+## Como executar
+npm install
+npm start# Poupe App - Sistema de Gestão Financeira
 
