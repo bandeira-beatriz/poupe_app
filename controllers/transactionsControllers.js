@@ -1,10 +1,15 @@
-import {novaTransacao, atualizarTransacao, conferenciaTransacao, deletandoTransacao, listandoTransacoes, obterEstatisticas, buscarTransacaoPorId } from '../models/transactionsModels.js';
+import {novaTransacao, 
+        atualizarTransacao, 
+        deletandoTransacao, 
+        listandoTransacoes, 
+        obterEstatisticas, 
+        buscarTransacaoPorId} from '../models/transactionsModels.js';
 
 export async function validarTransacao(req, res) {
   console.log('Cadastrando transação(s)');
   
   try {
-    const user_id = req.user.userId;
+    const userId = req.user.userId;
     const transacoes = req.body;
 
     //Verificar se é array ou objeto único
@@ -62,7 +67,7 @@ export async function validarTransacao(req, res) {
           description,
           parseFloat(valor),
           date,
-          user_id,
+          userId,
           parseInt(category_id),
           type
         );
@@ -79,7 +84,7 @@ export async function validarTransacao(req, res) {
               description,
               valor: parseFloat(valor),
               date,
-              user_id,
+              userId,
               category_id: parseInt(category_id),
               type
             }
@@ -152,12 +157,14 @@ export async function validarTransacao(req, res) {
   }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export async function alterarTransacao(req, res) {
   console.log('Cadastrando nova transação');
       try {
 
         const {description, valor, date, category_id, type} = req.body;
-        const user_id = req.user.userId;
+        const userId = req.user.userId;
         const { id } = req.params;
 
         if (!id || isNaN(id)) {
@@ -187,9 +194,9 @@ export async function alterarTransacao(req, res) {
                 message: 'Formato de data inválido! Use YYYY-MM-DD'
         });
         }
-        console.log('Dados validados:', {description, valor, date, user_id, category_id, type});
+        console.log('Dados validados:', {description, valor, date, userId, category_id, type});
 
-        const resultado = await atualizarTransacao(parseInt(id), description, parseFloat(valor), date, user_id, parseInt(category_id), type);
+        const resultado = await atualizarTransacao(parseInt(id), description, parseFloat(valor), date, userId, parseInt(category_id), type);
         
         if (resultado.success) {
             if (resultado.affectedRows > 0) {
@@ -204,7 +211,7 @@ export async function alterarTransacao(req, res) {
             description,
             valor: parseFloat(valor),
             date,
-            user_id,
+            userId,
             category_id: parseInt(category_id),
             type
             }
@@ -225,11 +232,13 @@ export async function alterarTransacao(req, res) {
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export async function deletarTransacao(req, res) {
   console.log('Deletando transação');
     try {
         const { id } = req.params;
-        const user_id = req.user.userId;
+        const userId = req.user.userId;
 
         //Validação de todas as informações digitadas
         if (!id || isNaN(id)) {
@@ -238,9 +247,9 @@ export async function deletarTransacao(req, res) {
             message: 'ID da transação é obrigatório!'
         });
         }
-        console.log('Deletando transação ID:', id, 'do usuário:', user_id);
+        console.log('Deletando transação ID:', id, 'do usuário:', userId);
 
-        const resultado = await deletandoTransacao(parseInt(id), user_id)
+        const resultado = await deletandoTransacao(parseInt(id), userId)
         
          if (resultado.success) {
             if (resultado.affectedRows > 0) {
@@ -274,11 +283,12 @@ export async function deletarTransacao(req, res) {
     }
 };
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export async function listarTransacoes(req, res) {
-    let connection;
     try {
-        const user_id = req.user.userId;
-        console.log('👤 User ID:', user_id);
+        const userId = req.user.userId;
+        console.log('User ID:', userId);
         
         const { 
             categoria_id, 
@@ -289,9 +299,9 @@ export async function listarTransacoes(req, res) {
             limit = 10 
         } = req.query;
 
-        console.log('🔍 Query params:', { categoria_id, tipo, data_inicio, data_fim, page, limit });
+        console.log('Query params:', { categoria_id, tipo, data_inicio, data_fim, page, limit });
 
-        // ✅ CORRIGIR: Garantir que page e limit são números
+        //Garantir que page e limit são números
         const pageNum = parseInt(page) || 1;
         const limitNum = parseInt(limit) || 10;
         const offset = (pageNum - 1) * limitNum;
@@ -305,10 +315,10 @@ export async function listarTransacoes(req, res) {
             offset: offset
         };
 
-        console.log('🎯 Filtros processados:', filtros);
+        console.log('Filtros processados:', filtros);
 
-        // ✅ CHAMAR A FUNÇÃO DO MODEL
-        const transacoes = await listandoTransacoes(user_id, filtros);
+        //CHAMAR A FUNÇÃO DO MODEL
+        const transacoes = await listandoTransacoes(userId, filtros);
 
         // Contar total sem paginação
         const filtrosContagem = { 
@@ -318,11 +328,11 @@ export async function listarTransacoes(req, res) {
             data_fim: filtros.data_fim
         };
         
-        const todasTransacoes = await listandoTransacoes(user_id, filtrosContagem);
+        const todasTransacoes = await listandoTransacoes(userId, filtrosContagem);
         const total = todasTransacoes.length;
         const totalPages = Math.ceil(total / limitNum);
 
-        console.log('✅ Transações encontradas:', transacoes.length);
+        console.log('Transações encontradas:', transacoes.length);
 
         res.json({
             success: true,
@@ -344,10 +354,13 @@ export async function listarTransacoes(req, res) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
 export async function buscarTransacao(req, res) {
     try {
         const { id } = req.params;
-        const user_id = req.user.userId;
+        const userId = req.user.userId;
 
         if (!id || isNaN(id)) {
             return res.status(400).json({
@@ -356,7 +369,7 @@ export async function buscarTransacao(req, res) {
             });
         }
 
-        const transacao = await buscarTransacaoPorId(parseInt(id), user_id);
+        const transacao = await buscarTransacaoPorId(parseInt(id), userId);
 
         if (!transacao) {
             return res.status(404).json({
@@ -379,9 +392,11 @@ export async function buscarTransacao(req, res) {
     }
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 export async function obterEstatisticasporID(req, res) {
     try {
-        const user_id = req.user.userId;
+        const userId = req.user.userId;
         const { mes, ano } = req.query;
 
         // Usar mês/ano atual se não especificado
@@ -389,7 +404,7 @@ export async function obterEstatisticasporID(req, res) {
         const mesAtual = mes || dataAtual.getMonth() + 1;
         const anoAtual = ano || dataAtual.getFullYear();
 
-        const estatisticas = await obterEstatisticas(user_id, mesAtual, anoAtual);
+        const estatisticas = await obterEstatisticas(userId, mesAtual, anoAtual);
 
         res.json({
             success: true,

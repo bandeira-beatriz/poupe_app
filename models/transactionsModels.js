@@ -1,33 +1,9 @@
 import { getConnection } from '../config/database.js';
 
 
-export async function conferenciaTransacao(transactionId, userId = null) {
-    let connection;
-    try{
-        connection = await getConnection();
-        let query = "SELECT id, description, valor, date, user_id, category_id, type FROM transactions WHERE id = ?";
-        let params = [transactionId];
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        // Se userId for fornecido, busca apenas transações do usuário
-        if (userId) {
-            query += " AND user_id = ?";
-            params.push(userId);
-        }
-        
-        const [transacoes] = await connection.execute(query, params);
-        return transacoes[0]; // Retorna a transação ou undefined
-    } catch (error) {
-        console.error('Erro no model ao buscar transação:', error);
-        throw error;
-    } finally { 
-        if (connection) {
-            await connection.end();
-        }
-    }
-}
-/////////////////////////////////////////////////////////////////
-
-export async function novaTransacao(description, valor, date, user_id, category_id, type) {
+export async function novaTransacao(description, valor, date, userId, category_id, type) {
     let connection
     try {
         connection = await getConnection();
@@ -43,7 +19,7 @@ export async function novaTransacao(description, valor, date, user_id, category_
 
         const [result] = await connection.execute(
       "INSERT INTO transactions (description, valor, date, user_id, category_id, type) VALUES (?, ?, ?, ?, ?, ?)", 
-      [description, valor, date, user_id, category_id, type]
+      [description, valor, date, userId, category_id, type]
     );
     console.log('Inserir nova transação', result);
         return {
@@ -69,9 +45,9 @@ export async function novaTransacao(description, valor, date, user_id, category_
         }
     }
 };
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export async function atualizarTransacao(transactionId, description, valor, date, user_id, category_id, type) {
+export async function atualizarTransacao(transactionId, description, valor, date, userId, category_id, type) {
     let connection
     try {
         connection = await getConnection();
@@ -89,7 +65,7 @@ export async function atualizarTransacao(transactionId, description, valor, date
             `UPDATE transactions 
              SET description = ?, valor = ?, date = ?, category_id = ?, type = ? 
              WHERE id = ? AND user_id = ?`, 
-            [description, valor, date, category_id, type, transactionId, user_id]
+            [description, valor, date, category_id, type, transactionId, userId]
         );
 
         console.log('Atualizar transação - Resultado:', result);
@@ -119,7 +95,7 @@ export async function atualizarTransacao(transactionId, description, valor, date
     }
 }
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function deletandoTransacao(transactionId, userId) {
     let connection
@@ -147,7 +123,7 @@ export async function deletandoTransacao(transactionId, userId) {
     }
 };
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 export async function listandoTransacoes(userId, filtros = {}) {
@@ -162,21 +138,17 @@ export async function listandoTransacoes(userId, filtros = {}) {
             LEFT JOIN categories c ON t.category_id = c.id
             WHERE t.user_id = ?
         `;
-        
-        // ✅ Usar o parâmetro 'userId' (não 'user_id')
+
         let params = [Number(userId)];
 
-        console.log('🗃️ Filtros recebidos no model:', filtros);
-        console.log('👤 userId recebido:', userId);
-
-        // ✅ REMOVER QUALQUER 'user_id' SOLTO DAQUI!
+        console.log('Filtros recebidos no model:', filtros);
+        console.log('userId recebido:', userId);
 
         // Filtros
-        if (filtros.categoria_id) {
-            query += ' AND t.category_id = ?';
-            params.push(Number(filtros.categoria_id));
+        if (filtros.category_id) {
+        query += ' AND t.category_id = ?';
+        params.push(Number(filtros.category_id));
         }
-
         if (filtros.tipo) {
             query += ' AND t.type = ?';
             params.push(filtros.tipo);
@@ -190,8 +162,8 @@ export async function listandoTransacoes(userId, filtros = {}) {
         // Ordenação
         query += ' ORDER BY t.date DESC, t.id DESC';
 
-        console.log('📝 Query final:', query);
-        console.log('🔢 Parâmetros:', params);
+        console.log('Query final:', query);
+        console.log('Parâmetros:', params);
 
         const [rows] = await connection.execute(query, params);
         return rows;
@@ -205,23 +177,25 @@ export async function listandoTransacoes(userId, filtros = {}) {
         }
     }
 }
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function obterEstatisticas(userId, mes, ano) {
     let connection;
     try {
         connection = await getConnection();
         
+        let query = `SELECT type, COALESCE(SUM(valor), 0) as total FROM transactions WHERE user_id = ?`;
+
+        let params = [userId]
+        if(mes && ano){
+            query += ` AND MONTH(date) = ? AND YEAR(date) = ?`;
+            params.push(mes, ano);
+        }
+
+        query += ` GROUP BY type`;
+
         //consulta para todos os tipos
-        const [resultados] = await connection.execute(
-            `SELECT 
-                type,
-                COALESCE(SUM(valor), 0) as total
-             FROM transactions 
-             WHERE user_id = ? AND MONTH(date) = ? AND YEAR(date) = ?
-             GROUP BY type`,
-            [userId, mes, ano]
-        );
+        const [resultados] = await connection.execute(query, params);
 
         //Inicializar totais
         const estatisticas = {
@@ -273,7 +247,7 @@ export async function obterEstatisticas(userId, mes, ano) {
     }
 }
 
-/////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 export async function buscarTransacaoPorId(transactionId, userId) {
     let connection;

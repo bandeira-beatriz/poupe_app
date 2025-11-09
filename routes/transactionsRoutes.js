@@ -8,7 +8,7 @@ const routerTransaction = Router()
 routerTransaction.put('/:id', authMiddleware, alterarTransacao);
 routerTransaction.post('/inserir', authMiddleware, validarTransacao)
 routerTransaction.delete('/:id', authMiddleware, deletarTransacao);
-routerTransaction.get('/tabela', authMiddleware, listarTransacoes);           // Listar com filtros
+routerTransaction.get('/filtros', authMiddleware, listarTransacoes);           // Listar com filtros
 routerTransaction.get('/estatisticas', authMiddleware, obterEstatisticasporID);    // Estatísticas
 routerTransaction.get('/:id', authMiddleware, buscarTransacao);           
 // routerTransaction.get('/tabela',authMiddleware, async (req, res) => {
