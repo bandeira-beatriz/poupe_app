@@ -1,0 +1,411 @@
+/* ===== VARIÁVEIS E CONFIGURAÇÕES GLOBAIS ===== */
+:root {
+  /* Cores */
+  --primary-gradient: linear-gradient(135deg, #4c6ef5, #15aabf, #63e6be);
+  --glass-bg: rgba(255, 255, 255, 0.12);
+  --glass-bg-light: rgba(255, 255, 255, 0.18);
+  --glass-bg-medium: rgba(255, 255, 255, 0.22);
+  --white: #ffffff;
+  --text-primary: #ffffff;
+  --income-color: #8ff7b8;
+  --expense-color: #ff9da7;
+  --investment-color: #a17fff;
+  --transfer-color: #ffd93d;
+  --loan-color: #ff7b54;
+  --accent-color: #0b7285;
+  --accent-hover: #e3fafc;
+  
+  /* Espaçamentos */
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 25px;
+  --spacing-xl: 35px;
+  --spacing-xxl: 45px;
+  
+  /* Bordas */
+  --border-radius-sm: 10px;
+  --border-radius-md: 12px;
+  --border-radius-lg: 14px;
+  --border-radius-xl: 18px;
+  
+  /* Sombras */
+  --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.15);
+  --shadow-lg: 0 6px 20px rgba(0, 0, 0, 0.12);
+  
+  /* Efeitos */
+  --blur-sm: blur(10px);
+  --blur-md: blur(12px);
+}
+
+/* ===== RESET E BASE ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  line-height: 1.6;
+  color: var(--text-primary);
+}
+
+/* ===== LAYOUT GERAL ===== */
+.dashboard-container {
+  min-height: 100vh;
+  padding: 50px 80px;
+  background: var(--primary-gradient);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* ===== TIPOGRAFIA ===== */
+.dashboard-container h1 {
+  text-align: center;
+  margin-bottom: var(--spacing-xxl);
+  font-size: 2.625rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.dashboard-container h1::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--white);
+  opacity: 0.3;
+  border-radius: 2px;
+}
+
+.dashboard-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: var(--spacing-md);
+  font-weight: 600;
+}
+
+/* ===== CARDS DE ESTATÍSTICAS ===== */
+.stats-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-lg);
+  background: var(--glass-bg);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-xl);
+  backdrop-filter: var(--blur-md);
+  margin-bottom: var(--spacing-xxl);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stats-box div {
+  background: var(--glass-bg-medium);
+  padding: var(--spacing-lg);
+  text-align: center;
+  border-radius: var(--border-radius-lg);
+  font-size: 1.125rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stats-box div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.stats-box div:hover::before {
+  left: 100%;
+}
+
+.stats-box div:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stats-box div strong {
+  display: block;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-bottom: var(--spacing-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== FORMULÁRIO ===== */
+.form-transacao {
+  background: var(--glass-bg-light);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-xl);
+  max-width: 650px;
+  margin: 0 auto var(--spacing-xxl) auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  backdrop-filter: var(--blur-sm);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-transacao input,
+.form-transacao select {
+  padding: var(--spacing-md);
+  border: none;
+  border-radius: var(--border-radius-sm);
+  outline: none;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  font-family: "Poppins", sans-serif;
+}
+
+.form-transacao input:focus,
+.form-transacao select:focus {
+  border-color: var(--accent-color);
+  background: var(--white);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 114, 133, 0.2);
+}
+
+.form-transacao button {
+  padding: var(--spacing-md);
+  border: none;
+  background: var(--white);
+  color: var(--accent-color);
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--spacing-sm);
+  font-family: "Poppins", sans-serif;
+}
+
+.form-transacao button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(11, 114, 133, 0.3);
+}
+
+.form-transacao button:active {
+  transform: translateY(0);
+}
+
+/* ===== LISTA DE TRANSAÇÕES ===== */
+.lista {
+  background: var(--glass-bg-light);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-xl);
+  backdrop-filter: var(--blur-sm);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ===== CABEÇALHO DA LISTA ===== */
+.lista-header {
+  display: grid;
+  grid-template-columns: 1fr 120px 140px 160px 140px;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  opacity: 0.9;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ===== ITENS DA LISTA ===== */
+.item {
+  display: grid;
+  grid-template-columns: 1fr 120px 140px 160px 140px;
+  align-items: center;
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+  background: var(--glass-bg-medium);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.item:hover {
+  transform: translateX(8px);
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.item span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: var(--spacing-xs) 0;
+}
+
+/* ===== CORES POR TIPO DE TRANSAÇÃO ===== */
+.item[data-type="Receita"] {
+  color: var(--income-color);
+}
+
+.item[data-type="Despesa"] {
+  color: var(--expense-color);
+}
+
+.item[data-type="Investimento"] {
+  color: var(--investment-color);
+}
+
+.item[data-type="Transferência"] {
+  color: var(--transfer-color);
+}
+
+.item[data-type="Empréstimo"] {
+  color: var(--loan-color);
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 1200px) {
+  .dashboard-container {
+    padding: 40px 60px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 30px 20px;
+  }
+  
+  .dashboard-container h1 {
+    font-size: 2rem;
+    margin-bottom: var(--spacing-xl);
+  }
+  
+  .stats-box {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+  
+  .lista-header,
+  .item {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-sm);
+    text-align: center;
+  }
+  
+  .item::before {
+    width: 100%;
+    height: 3px;
+    top: auto;
+    bottom: 0;
+  }
+  
+  .form-transacao {
+    margin-bottom: var(--spacing-xl);
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 20px 15px;
+  }
+  
+  .form-transacao {
+    padding: var(--spacing-lg);
+  }
+  
+  .lista {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dashboard-container h1,
+.stats-box,
+.form-transacao,
+.lista {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.stats-box {
+  animation-delay: 0.1s;
+}
+
+.form-transacao {
+  animation-delay: 0.2s;
+}
+
+.lista {
+  animation-delay: 0.3s;
+}
+
+/* ===== ESTADOS DE FOCUS VISIBLE ===== */
+@media (prefers-reduced-motion: no-preference) {
+  .form-transacao button:focus-visible,
+  .form-transacao input:focus-visible,
+  .form-transacao select:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+  }
+}
+
+/* ===== PREFERÊNCIAS DE REDUÇÃO DE MOVIMENTO ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

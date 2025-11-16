@@ -1,0 +1,96 @@
+/* Fundo completo com gradiente */
+.login-container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #63e6be, #15aabf, #4c6ef5);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Card central */
+.card {
+  width: 420px;
+  background: #ffffffee;
+  padding: 40px 35px;
+  border-radius: 20px;
+  box-shadow: 0px 15px 45px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(6px);
+  text-align: center;
+}
+
+/* Título */
+.card h1 {
+  font-size: 2rem;
+  margin-bottom: 5px;
+  color: #1f2b5b;
+  font-weight: 700;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  color: #6270a6;
+  margin-bottom: 30px;
+}
+
+/* Inputs */
+.card input {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid #c6d4ff;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.card input:focus {
+  border-color: #4b79ff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(75, 121, 255, 0.4);
+}
+
+/* Botão */
+.card button {
+  width: 100%;
+  padding: 14px;
+  background: #4b79ff;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.25s;
+}
+
+.card button:hover {
+  background: #355cf0;
+}
+
+/* Mensagens */
+.mensagem {
+  margin-top: 15px;
+  font-size: 0.95rem;
+  color: #333;
+  font-weight: 500;
+}
+
+/* Link para registrar */
+.register-link {
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: #1f2b5b;
+}
+
+.register-link a {
+  color: #4b79ff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
