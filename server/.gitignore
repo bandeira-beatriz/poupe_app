@@ -1,0 +1,50 @@
+# Dependências
+node_modules/
+
+# Builds e distribuições
+dist/
+build/
+out/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Editores e IDEs
+.vscode/
+.idea/
+
+# Cache e temporários
+*.tgz
+*.tmp
+.cache/
+.temp/
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# Testes
+.jest/
+.nyc_output/
+
+# Outros
+*.bak
+*.swp
+
+# Se usar TypeScript
+*.tsbuildinfo
