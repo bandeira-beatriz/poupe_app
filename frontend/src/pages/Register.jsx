@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import "../styles/Register.css";
 
 export default function Register() {
@@ -6,25 +7,33 @@ export default function Register() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [mensagem, setMensagem] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function handleRegister(e) {
     e.preventDefault();
+    setLoading(true);
 
-    const response = await fetch('http://localhost:3000/api/user/registrar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password })
-    });
+    try {
+      const response = await fetch('http://localhost:3000/api/user/registrar', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.success) {
-      setMensagem('🎉 Conta criada com sucesso! Redirecionando...');
-      setTimeout(() => {
-        window.location.href = '/login';
-      }, 2000);
-    } else {
-      setMensagem(`❌ ${data.message}`);
+      if (data.success) {
+        setMensagem('🎉 Conta criada com sucesso! Redirecionando...');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 2000);
+      } else {
+        setMensagem(`❌ ${data.message}`);
+      }
+    } catch (error) {
+      setMensagem('❌ Erro de conexão. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -40,6 +49,8 @@ export default function Register() {
             placeholder="Seu nome completo"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            required
+            disabled={loading}
           />
 
           <input
@@ -47,6 +58,8 @@ export default function Register() {
             placeholder="Seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={loading}
           />
 
           <input
@@ -54,15 +67,31 @@ export default function Register() {
             placeholder="Crie uma senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
+            minLength="6"
+            disabled={loading}
           />
 
-          <button type="submit">Criar Conta</button>
+          <button type="submit" disabled={loading}>
+            {loading ? (
+              <>
+                <span className="loading"></span>
+                Criando conta...
+              </>
+            ) : (
+              'Criar Conta'
+            )}
+          </button>
         </form>
 
-        {mensagem && <p className="mensagem">{mensagem}</p>}
+        {mensagem && (
+          <p className={`mensagem ${mensagem.includes('🎉') ? 'success' : 'error'}`}>
+            {mensagem}
+          </p>
+        )}
 
         <p className="login-link">
-          Já tem conta? <a href="/login">Entrar</a>
+          Já tem conta? <Link to="/login">Entrar</Link>
         </p>
       </div>
     </div>

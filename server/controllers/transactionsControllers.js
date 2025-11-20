@@ -160,10 +160,10 @@ export async function deletarTransacao(req, res) {
 export async function listarTransacoes(req, res) {
   try {
     const userId = req.user.userId;
-    const { categoria_id, tipo, data_inicio, data_fim, page = 1, limit = 10 } = req.query;
+    const { category_id, tipo, data_inicio, data_fim, page = 1, limit = 10 } = req.query;
 
     const filtros = {
-      categoria_id: categoria_id || null,
+      category_id: category_id || null,
       tipo: tipo || null,
       data_inicio: data_inicio || null,
       data_fim: data_fim || null,
@@ -218,16 +218,24 @@ export async function obterEstatisticasporID(req, res) {
     const userId = req.user.userId;
     const { mes, ano } = req.query;
 
-    const agora = new Date();
-    const mesAtual = mes || agora.getMonth() + 1;
-    const anoAtual = ano || agora.getFullYear();
+    let mesFiltro, anoFiltro;
 
-    const estatisticas = await obterEstatisticas(userId, mesAtual, anoAtual);
+    if (mes === 'all' && ano === 'all') {
+      // Sem filtro de data - todos os registros
+      mesFiltro = null;
+      anoFiltro = null;
+    } else {
+      const agora = new Date();
+      mesFiltro = mes || agora.getMonth() + 1;
+      anoFiltro = ano || agora.getFullYear();
+    }
+
+    const estatisticas = await obterEstatisticas(userId, mesFiltro, anoFiltro);
 
     res.json({
       success: true,
       data: estatisticas,
-      periodo: { mes: mesAtual, ano: anoAtual }
+      periodo: { mes: mes, ano: ano }
     });
 
   } catch (error) {
